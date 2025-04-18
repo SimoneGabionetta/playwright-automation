@@ -163,7 +163,7 @@ test.describe('testing with data modeling',()=>{
     })
 })
 
-test.describe('testing with data modeling',()=>{
+test.describe('page object model',()=>{
 
     //use interface
     const user: UserModel = {
@@ -188,6 +188,10 @@ test.describe('testing with data modeling',()=>{
     await usersPage.checkTitle
     
            
+    })
+    test.only("lista de devices", async ({page})=>{
+        //console.log(devices)
+        //list devices playwright
     })
 })
 
