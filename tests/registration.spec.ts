@@ -1,8 +1,8 @@
 import {test, expect} from '@playwright/test'
 import { faker } from '@faker-js/faker';
+import { UserModel } from './fixtures/user.model';
 
 
-//suite
 test.describe('test base',()=>{
     test('register new user',async({page})=>{
 
@@ -34,9 +34,8 @@ test.describe('test base',()=>{
        
     })
 })
-
 test.describe('tests using built-in method',()=>{
-    test('register new user',async({page})=>{
+    test.only('register new user',async({page})=>{
 
         //acess the page
         page.goto(' https://ecommerce-playground.lambdatest.io/index.php?route=account/register')
@@ -64,7 +63,6 @@ test.describe('tests using built-in method',()=>{
        
     })
 })
-
 test.describe('user faker',()=>{
     test('register new user',async({page})=>{
 
@@ -95,9 +93,8 @@ test.describe('user faker',()=>{
     })
     // It makes sense to use only the email field because of the business rule
 })
-
 test.describe('test with other validations',()=>{
-    test.only('register new user',async({page})=>{
+    test('register new user',async({page})=>{
        
     page.goto(' https://ecommerce-playground.lambdatest.io/index.php?route=account/register')
 
@@ -121,6 +118,45 @@ test.describe('test with other validations',()=>{
     await expect(continue_button).toBeVisible()
     await expect(continue_button).toBeEnabled()
 
+    await page.waitForTimeout(1000)
+           
+    })
+})
+test.describe('testing with data modeling',()=>{
+
+    //use interface
+    const user: UserModel = {
+        firstName: 'Lais',
+        lastName: 'Sousa',
+        email: faker.internet.email(),
+        phone:'888888888',
+        password:'123456',
+        confirmPassword:'123456',
+        newsLetter: true,
+        terms:true
+    }
+    test.only('register new user',async({page})=>{
+       
+    page.goto(' https://ecommerce-playground.lambdatest.io/index.php?route=account/register')
+
+    await page.fill('id=input-firstname',user.firstName)    
+    await page.fill('id=input-lastname',user.lastName)
+    await page.fill('id=input-email',user.email)
+    await page.fill('id=input-telephone',user.phone)
+    await page.fill('id=input-password',user.password)
+    await page.fill('id=input-confirm',user.confirmPassword)  
+
+    if(user.newsLetter == true){
+        await page.click('xpath=//label[@for="input-newsletter-yes"]')
+    }
+    
+    if(user.terms == true){
+        await page.click('xpath=//label[@for="input-agree"]')
+    }       
+    await page.click('xpath=//input[@value="Continue"]')
+    
+    //validations page
+    await expect(page).toHaveTitle("Your Account Has Been Created!")
     await page.waitForTimeout(1000)
            
     })
