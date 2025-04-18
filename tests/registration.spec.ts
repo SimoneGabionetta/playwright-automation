@@ -1,6 +1,7 @@
 import {test, expect} from '@playwright/test'
 import { faker } from '@faker-js/faker';
 import { UserModel } from './fixtures/user.model';
+import { UsersPage } from './support/pages/users';
 
 
 test.describe('test base',()=>{
@@ -135,7 +136,7 @@ test.describe('testing with data modeling',()=>{
         newsLetter: true,
         terms:true
     }
-    test.only('register new user',async({page})=>{
+    test('register new user',async({page})=>{
        
     page.goto(' https://ecommerce-playground.lambdatest.io/index.php?route=account/register')
 
@@ -158,6 +159,34 @@ test.describe('testing with data modeling',()=>{
     //validations page
     await expect(page).toHaveTitle("Your Account Has Been Created!")
     await page.waitForTimeout(1000)
+           
+    })
+})
+
+test.describe('testing with data modeling',()=>{
+
+    //use interface
+    const user: UserModel = {
+        firstName: 'Lais',
+        lastName: 'Sousa',
+        email: faker.internet.email(),
+        phone:'888888888',
+        password:'123456',
+        confirmPassword:'123456',
+        newsLetter: true,
+        terms:true
+    }
+
+   
+    test.only('page object model',async({page})=>{
+    
+    //usersPage-access functions from class instance
+    const usersPage = new UsersPage(page)
+
+    await usersPage.visitURL()
+    await usersPage.register(user)
+    await usersPage.checkTitle
+    
            
     })
 })
