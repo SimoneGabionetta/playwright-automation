@@ -1,6 +1,10 @@
 import {Page, expect, Locator } from '@playwright/test'
 import { UserModel } from '../../../fixtures/user.model'
 
+// access environment variables
+require("dotenv").config()
+const BASE_URL = process.env.BASE_URL
+
 export class UsersPage{
 
     //prop 
@@ -33,7 +37,11 @@ export class UsersPage{
 
      //function visit url
     async visitURL(){
-        this.page.goto(' https://ecommerce-playground.lambdatest.io/index.php?route=account/register')
+        //chec BASE_URL
+        if(!BASE_URL){
+            throw new Error("environment variable BASE_URL is not defined")
+        }
+        await this.page.goto(BASE_URL)
     }
 
     //function register:receive user by param and fill in fields, click checkbox and click button
@@ -57,8 +65,7 @@ export class UsersPage{
     async checkTitle(){
         await expect(this.page).toHaveTitle("Your Account Has Been Created!")
 
-    }
-    
+    }   
    
     
         
