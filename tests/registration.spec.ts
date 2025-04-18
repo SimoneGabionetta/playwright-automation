@@ -16,7 +16,7 @@ test.describe('test base',()=>{
            
         //2-locate directly
         await page.fill('id=input-lastname','Souza')
-        await page.fill('id=input-email','nosso.email3@gmail.com')
+        await page.fill('id=input-email',faker.internet.email())
         await page.fill('id=input-telephone','888888888')
         await page.fill('id=input-password','123456')
         await page.fill('id=input-confirm','123456')
@@ -45,7 +45,7 @@ test.describe('tests using built-in method',()=>{
         await page.getByLabel('First Name').fill('Lais')
         await page.getByLabel('Last Name').fill('Souza')
                  
-        await page.fill('id=input-email','nosso.email5@gmail.com')
+        await page.fill('id=input-email',faker.internet.email())
         await page.fill('id=input-telephone','888888888')
         await page.fill('id=input-password','123456')
         await page.fill('id=input-confirm','123456')
@@ -66,7 +66,7 @@ test.describe('tests using built-in method',()=>{
 })
 
 test.describe('user faker',()=>{
-    test.only('register new user',async({page})=>{
+    test('register new user',async({page})=>{
 
     page.goto(' https://ecommerce-playground.lambdatest.io/index.php?route=account/register')
              
@@ -94,6 +94,36 @@ test.describe('user faker',()=>{
        
     })
     // It makes sense to use only the email field because of the business rule
+})
+
+test.describe('test with other validations',()=>{
+    test.only('register new user',async({page})=>{
+       
+    page.goto(' https://ecommerce-playground.lambdatest.io/index.php?route=account/register')
+
+    await page.fill('id=input-firstname','Lais')    
+    await page.fill('id=input-lastname','Souza')
+    await page.fill('id=input-email',faker.internet.email())
+    await page.fill('id=input-telephone','888888888')
+    await page.fill('id=input-password','123456')
+    await page.fill('id=input-confirm','123456')  
+    await page.click('xpath=//label[@for="input-newsletter-yes"]')
+    await page.click('xpath=//label[@for="input-agree"]')
+    await page.click('xpath=//input[@value="Continue"]')
+    
+    //validations page
+    await expect(page).toHaveTitle("Your Account Has Been Created!")
+    await expect(page).toHaveURL("https://ecommerce-playground.lambdatest.io/index.php?route=account/success")
+    await expect(page.locator('xpath=//div[@id="content"]/h1')).toHaveText(' Your Account Has Been Created!')
+  
+    //validation button-locator e expect
+    const continue_button = page.locator('xpath=//a[text()="Continue"]')
+    await expect(continue_button).toBeVisible()
+    await expect(continue_button).toBeEnabled()
+
+    await page.waitForTimeout(1000)
+           
+    })
 })
 
 
