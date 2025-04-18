@@ -1,13 +1,34 @@
-import {Page, expect } from '@playwright/test'
+import {Page, expect, Locator } from '@playwright/test'
 import { UserModel } from '../../../fixtures/user.model'
 
 export class UsersPage{
 
     //prop 
     readonly page:Page
+    //prop locators
+    readonly firstName:Locator
+    readonly lastName: Locator
+    readonly email: Locator
+    readonly phone: Locator
+    readonly password: Locator
+    readonly confirm: Locator
+    readonly newsLetterYes: Locator
+    readonly terms: Locator
+    readonly continuosButton: Locator
+
     //constructor
     constructor(page:Page){
         this.page = page
+        this.firstName = page.locator('id=input-firstname')
+        this.lastName = page.locator('id=input-lastname')
+        this.email = page.locator('id=input-email')
+        this.phone = page.locator('id=input-telephone')
+        this.password = page.locator('id=input-password')
+        this.confirm = page.locator('id=input-confirm')
+        this.newsLetterYes = page.locator('xpath=//label[@for="input-newsletter-yes"]')
+        this.terms = page.locator('xpath=//label[@for="input-agree"]')
+        this.continuosButton = page.locator('xpath=//input[@value="Continue"]')
+        
     }
 
      //function visit url
@@ -17,26 +38,27 @@ export class UsersPage{
 
     //function register:receive user by param and fill in fields, click checkbox and click button
     async register(user: UserModel){//parm obj user
-        await this.page.fill('id=input-firstname',user.firstName)    
-        await this.page.fill('id=input-lastname',user.lastName)
-        await this.page.fill('id=input-email',user.email)
-        await this.page.fill('id=input-telephone',user.phone)
-        await this.page.fill('id=input-password',user.password)
-        await this.page.fill('id=input-confirm',user.confirmPassword)  
+        await this.firstName.fill(user.firstName)    
+        await this.lastName.fill(user.lastName)
+        await this.email.fill(user.email)
+        await this.phone.fill(user.phone)
+        await this.password.fill(user.password)
+        await this.confirm.fill(user.confirmPassword)  
 
         if(user.newsLetter == true){
-            await this.page.click('xpath=//label[@for="input-newsletter-yes"]')
+            await this.newsLetterYes.click()
         }
         
         if(user.terms == true){
-        await this.page.click('xpath=//label[@for="input-agree"]')
+        await this.terms.click()
         }       
-        await this.page.click('xpath=//input[@value="Continue"]')
+        await this.continuosButton.click()
     }
     async checkTitle(){
         await expect(this.page).toHaveTitle("Your Account Has Been Created!")
 
     }
+    
    
     
         
