@@ -1,8 +1,10 @@
 import {test, expect} from '@playwright/test'
+import { faker } from '@faker-js/faker';
+
 
 //suite
 test.describe('test base',()=>{
-    test.only('register new user',async({page})=>{
+    test('register new user',async({page})=>{
 
         //acess the page
         page.goto(' https://ecommerce-playground.lambdatest.io/index.php?route=account/register')
@@ -34,7 +36,7 @@ test.describe('test base',()=>{
 })
 
 test.describe('tests using built-in method',()=>{
-    test.only('register new user',async({page})=>{
+    test('register new user',async({page})=>{
 
         //acess the page
         page.goto(' https://ecommerce-playground.lambdatest.io/index.php?route=account/register')
@@ -63,5 +65,38 @@ test.describe('tests using built-in method',()=>{
     })
 })
 
+test.describe('user faker',()=>{
+    test.only('register new user',async({page})=>{
 
-//methods-builtin
+    page.goto(' https://ecommerce-playground.lambdatest.io/index.php?route=account/register')
+             
+          
+    await page.fill('id=input-firstname',faker.person.firstName())
+    await page.fill('id=input-lastname',faker.person.lastName())
+    await page.fill('id=input-email',faker.internet.email())
+    await page.fill('id=input-telephone',faker.phone.number())
+        
+    //generate 1xpassword, store sweep and use confirmation
+    const pwd = faker.internet.password()
+
+    await page.fill('id=input-password',pwd)
+    await page.fill('id=input-confirm',pwd)
+        
+       
+    await page.click('xpath=//label[@for="input-newsletter-yes"]')
+    await page.click('xpath=//label[@for="input-agree"]')
+    await page.click('xpath=//input[@value="Continue"]')
+    //validation
+    await expect(page).toHaveTitle('Your Account Has Been Created!')
+        
+    await page.waitForTimeout(5000)
+    
+       
+    })
+    // It makes sense to use only the email field because of the business rule
+})
+
+
+
+
+
